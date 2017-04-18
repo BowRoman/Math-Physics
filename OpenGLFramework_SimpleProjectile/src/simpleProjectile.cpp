@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <string.h>
+#include <string>
+#include <fstream>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -57,6 +58,8 @@ Circle3D eulerEBall, eulerSEBall, verletBall, RK4Ball, realBall;
 IntegrationHandler integrationModule;
 
 void initPhysics(double rad, double speed, double angle);
+
+std::ofstream ballValues("BallValues.txt");
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 int Menu(void)
@@ -210,6 +213,7 @@ void updateEulerEPhysics(Circle3D &ball, double timeInc)
 	// we have 1 forces here: 1) gravity which is in positive y direction. 
 	//////////////Explicit Euler Integration:///////////////////////
 	integrationModule.EulerE(ball.cPos, ball.cV, Gravity, timeInc);
+	ballValues << "EulerE pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 
 	CheckEdgeBoundaries(ball);
 }
@@ -217,15 +221,25 @@ void updateEulerEPhysics(Circle3D &ball, double timeInc)
 void updateEulerSEPhysics(Circle3D &ball, double timeInc)
 {
 	integrationModule.EulerSE(ball.cPos, ball.cV, Gravity, timeInc);
+	ballValues << "EulerSE pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 
 	CheckEdgeBoundaries(ball);
 }
 /////////////////////////////////////////////////////////////////////
-void updateVerletPhysics(Circle3D &ball, double timeInc)
+void updateVerletPhysics(Circle3D &ball, double timeInc, int i)
 {
 	// More exact formula for variable time step is the following:
 	//  x_2 = x_1 + (x_1 - x_0)(dt_1/dt_0) + accel * dt_1 * dt_1
-	integrationModule.Verlet(ball.cPos, ball.lPos, Gravity, timeInc);
+	if (i <= 0)
+	{
+		verletBall.lPos = verletBall.cPos;
+		updateEulerEPhysics(verletBall, timeInc);
+	}
+	else
+	{
+		integrationModule.Verlet(ball.cPos, ball.lPos, Gravity, timeInc);
+	}
+	ballValues << "Verlet pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 	CheckEdgeBoundaries(ball);
 }
 
@@ -236,6 +250,7 @@ void updatePrecisePhysics(Circle3D &ball, double timeInc)
 	double ax = 0;
 	ball.cPos = ball.cPos + ball.cV * timeInc + Gravity * (timeInc * timeInc * 0.5);
 	ball.cV = ball.cV + Gravity * timeInc;
+	ballValues << "Precise pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 	CheckEdgeBoundaries(ball);
 }
 
@@ -244,6 +259,7 @@ void updatePrecisePhysics(Circle3D &ball, double timeInc)
 void updateRK4Physics(Circle3D &ball, double timeInc)
 {
 	integrationModule.RK4(ball.cPos, ball.cV, Gravity, timeInc);
+	ballValues << "RK4 pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 	CheckEdgeBoundaries(ball);
 }
 
@@ -257,15 +273,14 @@ void initPhysics(double rad, double speed, double angle)
 	Vector3d<float> iv(vx, vy, 0);
 //	eulerEBall.set(rad, ipos, iv, 2, 230, 0, 0);
 //	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
-//	verletBall.set(rad, ipos, iv, 2, 0, 200, 0);
-	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
+	verletBall.set(rad, ipos, iv, 2, 0, 200, 0);
+//	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
 	realBall.set(rad, ipos, iv, 2, 128, 128, 128);
 
 	//set prev position for verlet
 	// be careful to use exactly correct formula to compute prev position
 	// based on initial state. For projectile we use exact position formula:
-	Vector3d<float> prevPos = ipos + iv * (-stimeInc+0.003) +Gravity * (0.5 * (-stimeInc+0.003)*(-stimeInc+0.003));
-	verletBall.iPos = prevPos;
+	//Vector3d<float> prevPos = ipos + iv * (-stimeInc+0.003) +Gravity * (0.5 * (-stimeInc+0.003)*(-stimeInc+0.003));
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -312,10 +327,10 @@ int Game(void)
 		{
 			/////////// update physics /////////////////
 			updatePrecisePhysics(realBall, actualTimeInc);
-			updateEulerEPhysics(eulerEBall, actualTimeInc);
-			updateEulerSEPhysics(eulerSEBall, actualTimeInc);
-			updateVerletPhysics(verletBall, actualTimeInc);
-			updateRK4Physics(RK4Ball, actualTimeInc);
+		//	updateEulerEPhysics(eulerEBall, actualTimeInc);
+		//	updateEulerSEPhysics(eulerSEBall, actualTimeInc);
+			updateVerletPhysics(verletBall, actualTimeInc, i);
+		//	updateRK4Physics(RK4Ball, actualTimeInc);
 			/////////////////////////////////////////
 		}
 		//	UpdatePhysics(actualTimeInc);

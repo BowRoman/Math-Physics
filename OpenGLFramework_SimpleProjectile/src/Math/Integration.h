@@ -21,7 +21,7 @@ public:
 private:
 	State first, sec, third, fourth;
 
-	Vector3d<float> MultipyVecs(const Vector3d<float> vec1, const Vector3d<float> vec2);
+	Vector3d<float> Acceleration(const Vector3d<float> vec1, State state);
 	State Derive(State& initial, Vector3d<float> accel, double dTime, const State givenDer);
 };
 

@@ -48,12 +48,15 @@ void IntegrationHandler::RK4(Vector3d<float>& pos, Vector3d<float>& curVel, Vect
 	curVel += (dvdt*dTime);
 }
 
-Vector3d<float> IntegrationHandler::MultipyVecs(const Vector3d<float> vec1, const Vector3d<float> vec2)
+Vector3d<float> IntegrationHandler::Acceleration(const Vector3d<float> vec1, State state)
 {
+	const Vector3d<float> k = vec1;
+	const float b = 1;
+
 	Vector3d<float> product;
-	product.x = vec1.x * vec2.x;
-	product.y = vec1.y * vec2.y;
-	product.z = vec1.z * vec2.z;
+	//product.x = (k.x * state.pos.x) - (b * state.vel.x);
+	product.y = (k.y * state.pos.y) - (b * state.vel.y);
+	//product.z = (k.x * state.pos.z) - (b * state.vel.z);
 
 	return product;
 }
@@ -66,7 +69,7 @@ State IntegrationHandler::Derive(State& initial, Vector3d<float> accel, double d
 
 	State deriv;
 	deriv.pos = state.vel;
-	deriv.vel = MultipyVecs(accel,state.pos) /*- state.vel*/;
+	deriv.vel = Acceleration(accel,state) /*- state.vel*/;
 
 	return deriv;
 }
