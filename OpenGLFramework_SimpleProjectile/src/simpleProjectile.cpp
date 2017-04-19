@@ -42,8 +42,8 @@ double iSpeed = 15.0;  // initial ball speed
 double radius = 0.5;
 int circleSections = 10;
 
-const int winWidth = 800;
-const int winHeight = 600;
+const int winWidth = 1200;
+const int winHeight = 900;
 float ratio = (float)winHeight / (float)winWidth;
 float WorldWidth = 70.0; // 50 meter wide
 float WorldHeight = WorldWidth * ratio; // 
@@ -232,7 +232,7 @@ void updateVerletPhysics(Circle3D &ball, double timeInc, int i)
 	//  x_2 = x_1 + (x_1 - x_0)(dt_1/dt_0) + accel * dt_1 * dt_1
 	if (i <= 0)
 	{
-		verletBall.lPos = verletBall.cPos;
+		verletBall.lPos = verletBall.iPos;
 		updateEulerEPhysics(verletBall, timeInc);
 	}
 	else
@@ -274,7 +274,7 @@ void initPhysics(double rad, double speed, double angle)
 //	eulerEBall.set(rad, ipos, iv, 2, 230, 0, 0);
 //	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
 	verletBall.set(rad, ipos, iv, 2, 0, 200, 0);
-//	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
+	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
 	realBall.set(rad, ipos, iv, 2, 128, 128, 128);
 
 	//set prev position for verlet
@@ -326,11 +326,11 @@ int Game(void)
 		for(int i=0; i<numOfIteration; i++)
 		{
 			/////////// update physics /////////////////
-			updatePrecisePhysics(realBall, actualTimeInc);
+		//	updatePrecisePhysics(realBall, actualTimeInc);
 		//	updateEulerEPhysics(eulerEBall, actualTimeInc);
 		//	updateEulerSEPhysics(eulerSEBall, actualTimeInc);
-			updateVerletPhysics(verletBall, actualTimeInc, i);
-		//	updateRK4Physics(RK4Ball, actualTimeInc);
+		//	updateVerletPhysics(verletBall, actualTimeInc, i);
+			updateRK4Physics(RK4Ball, actualTimeInc);
 			/////////////////////////////////////////
 		}
 		//	UpdatePhysics(actualTimeInc);

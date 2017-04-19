@@ -30,7 +30,8 @@ public:
 
 	//Check if the Vectors have the same values (uses pairwise comparison of 
 	// 'std::tuple' on the x, y values of L and R.)
-	friend bool operator==(const Vector2d& L, const Vector2d& R) {
+	friend bool operator==(const Vector2d& L, const Vector2d& R)
+	{
 		return std::tie(L.x, L.y) == std::tie(R.x, R.y);
 	}
 	friend bool operator!=(const Vector2d& L, const Vector2d& R) { return !(L == R); }

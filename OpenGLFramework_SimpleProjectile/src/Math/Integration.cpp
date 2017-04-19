@@ -50,15 +50,15 @@ void IntegrationHandler::RK4(Vector3d<float>& pos, Vector3d<float>& curVel, Vect
 
 Vector3d<float> IntegrationHandler::Acceleration(const Vector3d<float> vec1, State state)
 {
-	const Vector3d<float> k = vec1;
-	const float b = 1;
+	/*const Vector3d<float> k = vec1;
+	const Vector3d<float> b = Vector3d<float>(0.0f,0.0f,0.0f);
 
 	Vector3d<float> product;
-	//product.x = (k.x * state.pos.x) - (b * state.vel.x);
-	product.y = (k.y * state.pos.y) - (b * state.vel.y);
-	//product.z = (k.x * state.pos.z) - (b * state.vel.z);
+	product.x = (k.x * state.pos.x) - (b.x * state.vel.x);
+	product.y = (k.y * state.pos.y) - (b.y * state.vel.y);
+	product.z = (k.x * state.pos.z) - (b.z * state.vel.z);*/
 
-	return product;
+	return vec1;
 }
 
 State IntegrationHandler::Derive(State& initial, Vector3d<float> accel, double dTime, const State givenDer)

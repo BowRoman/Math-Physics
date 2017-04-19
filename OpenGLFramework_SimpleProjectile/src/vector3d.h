@@ -36,7 +36,8 @@ public:
 
 	//Check if the Vectors have the same values (uses pairwise comparison of 
 	// 'std::tuple' on the x, y values of L and R.)
-	friend bool operator==(const Vector3d& L, const Vector3d& R) {
+	friend bool operator==(const Vector3d& L, const Vector3d& R)
+	{
 		return std::tie(L.x, L.y, L.z) == std::tie(R.x, R.y, R.z);
 	}
 	friend bool operator!=(const Vector3d& L, const Vector3d& R) { return !(L == R); }
@@ -69,7 +70,12 @@ template<class T> Vector3d<T>  operator+(const Vector3d<T>& v1, const Vector3d<T
 
 //Product functions
 template<class T> T DotProduct(const Vector3d<T>& a, const Vector3d<T>& b) { return  ((a.x * b.x) + (a.y * b.y) + (a.z * b.z)); }
-//template<class T>  Vector3d<T>  CrossProduct(const Vector3d<T>& a, const Vector3d<T>& b) { return ((a.x * b.y) - (a.y * b.x)); }
+template<class T>  Vector3d<T>  CrossProduct(const Vector3d<T>& a, const Vector3d<T>& b)
+{
+	return Vector3d<T>(a.y * b.z - a.z * b.y,
+					   a.z * b.x - a.x * b.z,
+					   a.x * b.y - a.y * b.x);
+}
 
 //Return the unit vector of the input
 template<class T> Vector3d<T> Normal(const Vector3d<T>& a) { double mag = a.Length(); return v<T>(a.x / mag, a.y / mag, a.z/mag); }
