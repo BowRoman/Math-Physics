@@ -22,7 +22,7 @@
 
 #include "Circle.h"
 
-#include "Math\Integration.h"
+#include "Integration.h"
 
 typedef enum 
 {
@@ -271,11 +271,11 @@ void initPhysics(double rad, double speed, double angle)
 	double vy = speed * sin(angle);
 	Vector3d<float> ipos(rad, rad, 0);
 	Vector3d<float> iv(vx, vy, 0);
-//	eulerEBall.set(rad, ipos, iv, 2, 230, 0, 0);
-//	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
+	eulerEBall.set(rad, ipos, iv, 2, 230, 0, 0);
+	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
 	verletBall.set(rad, ipos, iv, 2, 0, 200, 0);
 	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
-	realBall.set(rad, ipos, iv, 2, 128, 128, 128);
+	//realBall.set(rad, ipos, iv, 2, 128, 128, 128);
 
 	//set prev position for verlet
 	// be careful to use exactly correct formula to compute prev position
@@ -326,10 +326,10 @@ int Game(void)
 		for(int i=0; i<numOfIteration; i++)
 		{
 			/////////// update physics /////////////////
-		//	updatePrecisePhysics(realBall, actualTimeInc);
-		//	updateEulerEPhysics(eulerEBall, actualTimeInc);
-		//	updateEulerSEPhysics(eulerSEBall, actualTimeInc);
-		//	updateVerletPhysics(verletBall, actualTimeInc, i);
+			updatePrecisePhysics(realBall, actualTimeInc);
+			updateEulerEPhysics(eulerEBall, actualTimeInc);
+			updateEulerSEPhysics(eulerSEBall, actualTimeInc);
+			updateVerletPhysics(verletBall, actualTimeInc, i);
 			updateRK4Physics(RK4Ball, actualTimeInc);
 			/////////////////////////////////////////
 		}

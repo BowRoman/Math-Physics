@@ -33,13 +33,7 @@
     <ClCompile Include="bitmapfont\ysglusefontbitmap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Integration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="2DSphereSimpleCollision.cpp">
+    <ClCompile Include="interpolate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,21 +45,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fssimplewindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Integration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vector3d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
