@@ -15,57 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wcode\fswin32keymap.cpp">
+    <ClCompile Include="..\..\src\windows\fswin32keymap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wcode\fswin32winmain.cpp">
+    <ClCompile Include="..\..\src\windows\fswin32winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wcode\fswin32wrapper.cpp">
+    <ClCompile Include="..\..\src\windows\fswin32wrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bitmapfont\ysglfontdata.c">
+    <ClCompile Include="..\..\..\ysbitmapfont\src\ysglfontdata.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bitmapfont\ysglmaketextbitmap.c">
+    <ClCompile Include="..\..\..\ysbitmapfont\src\ysglmaketextbitmap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bitmapfont\ysglusefontbitmap.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Integration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="2DSphereSimpleCollision.cpp">
+    <ClCompile Include="..\..\..\ysbitmapfont\src\ysglusefontbitmap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wcode\fswin32keymap.h">
+    <ClInclude Include="..\..\src\windows\fswin32keymap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bitmapfont\ysglfontdata.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fssimplewindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Integration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vector3d.h">
+    <ClInclude Include="..\..\..\ysbitmapfont\src\ysglfontdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

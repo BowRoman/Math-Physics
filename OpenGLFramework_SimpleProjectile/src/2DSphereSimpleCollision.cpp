@@ -29,12 +29,27 @@ typedef enum
 	eSpeedDown,
 } changeType;
 
+enum class ObjectType
+{
+	sphere,
+	AABB,
+	OBB
+};
+
+enum class Mode
+{
+	collision,
+	resolution
+};
+
 double PI = 3.1415926;
 double iSpeed = 70.0;
 double radius = 20.;
 int num_segments = 30;
 double restitution = 0.8;  // coefficient of restitution.
 int BallCount = 5;
+ObjectType eObjType = ObjectType::sphere;
+Mode eMode = Mode::collision;
 
 struct BallS
 {
@@ -140,6 +155,20 @@ int Menu(void)
 		case FSKEY_RIGHT:
 			restitution = min(1.0, restitution+0.1);
 			break;
+		case FSKEY_C:
+			eMode = Mode::collision;
+			break;
+		case FSKEY_R:
+			eMode = Mode::resolution;
+			break;
+		case FSKEY_S:
+			eObjType = ObjectType::sphere;
+			break;
+		case FSKEY_A:
+			eObjType = ObjectType::AABB;
+			break;
+		case FSKEY_O:
+			eObjType = ObjectType::OBB;
 		}
 
 		int wid,hei;

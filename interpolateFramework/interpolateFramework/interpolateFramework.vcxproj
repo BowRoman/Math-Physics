@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -10,44 +10,22 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="2DSphereSimpleCollision.cpp" />
-    <ClCompile Include="bitmapfont\ysglfontdata.c" />
-    <ClCompile Include="bitmapfont\ysglmaketextbitmap.c" />
-    <ClCompile Include="bitmapfont\ysglusefontbitmap.c" />
-    <ClCompile Include="Integration.cpp" />
-    <ClCompile Include="Matrices.cpp" />
-    <ClCompile Include="wcode\fswin32keymap.cpp" />
-    <ClCompile Include="wcode\fswin32winmain.cpp" />
-    <ClCompile Include="wcode\fswin32wrapper.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="bitmapfont\ysglfontdata.h" />
-    <ClInclude Include="fssimplewindow.h" />
-    <ClInclude Include="Circle.h" />
-    <ClInclude Include="Integration.h" />
-    <ClInclude Include="Matrices.h" />
-    <ClInclude Include="vector2d.h" />
-    <ClInclude Include="vector3d.h" />
-    <ClInclude Include="wcode\fswin32keymap.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{66A26E05-0946-43E8-A3A7-175F088FC8E4}</ProjectGuid>
+    <ProjectGuid>{C06194C2-AB11-48C6-8185-946662E13962}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>sampleProject</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <RootNamespace>interpolateFramework</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -74,13 +52,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\..\ysbitmapfont\src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;Console;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\..\ysbitmapfont\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <OutputFile>$(SolutionDir)$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
@@ -95,7 +72,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Reza\Dropbox\teaching\VGP248\SimpleOGLFramework\fssimplewindow\src;C:\Users\Reza\Dropbox\teaching\VGP248\SimpleOGLFramework\ysbitmapfont\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\..\ysbitmapfont\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +81,18 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\ysbitmapfont\src\ysglfontdata.c" />
+    <ClCompile Include="..\..\..\ysbitmapfont\src\ysglmaketextbitmap.c" />
+    <ClCompile Include="..\..\..\ysbitmapfont\src\ysglusefontbitmap.c" />
+    <ClCompile Include="..\..\src\windows\fswin32keymap.cpp" />
+    <ClCompile Include="..\..\src\windows\fswin32winmain.cpp" />
+    <ClCompile Include="..\..\src\windows\fswin32wrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\ysbitmapfont\src\ysglfontdata.h" />
+    <ClInclude Include="..\..\src\windows\fswin32keymap.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
