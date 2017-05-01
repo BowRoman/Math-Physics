@@ -20,10 +20,12 @@ void IntegrationHandler::EulerSE(Vector3d<float>& pos, Vector3d<float>& curVel, 
 	pos += curVel * dTime;
 }
 
-void IntegrationHandler::Verlet(Vector3d<float>& pos, Vector3d<float>& lastPos, Vector3d<float> accel, double dTime)
+void IntegrationHandler::Verlet(Vector3d<float>& pos, Vector3d<float>& lastPos, Vector3d<float>& curVel, Vector3d<float> accel, double dTime)
 {
+	lastPos = pos - curVel*dTime;
+	curVel += accel * dTime;
 	Vector3d<float> curPos = pos;
-	pos = curPos + (curPos - lastPos) + (accel*(float)dTime*(float)dTime);
+	pos = ((curPos + curPos) - lastPos) + (accel*(float)dTime*(float)dTime);
 	lastPos = curPos;
 }
 
