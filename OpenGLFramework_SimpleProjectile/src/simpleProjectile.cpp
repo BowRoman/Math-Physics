@@ -42,8 +42,8 @@ double iSpeed = 15.0;  // initial ball speed
 double radius = 0.5;
 int circleSections = 10;
 
-const int winWidth = 1200;
-const int winHeight = 900;
+const int winWidth = 800;
+const int winHeight = 600;
 float ratio = (float)winHeight / (float)winWidth;
 float WorldWidth = 70.0; // 50 meter wide
 float WorldHeight = WorldWidth * ratio; // 
@@ -230,15 +230,7 @@ void updateVerletPhysics(Circle3D &ball, double timeInc, int i)
 {
 	// More exact formula for variable time step is the following:
 	//  x_2 = x_1 + (x_1 - x_0)(dt_1/dt_0) + accel * dt_1 * dt_1
-	if (i <= 0)
-	{
-		verletBall.lPos = verletBall.iPos;
-		updateEulerEPhysics(verletBall, timeInc);
-	}
-	else
-	{
-		integrationModule.Verlet(ball.cPos, ball.lPos, Gravity, timeInc);
-	}
+	integrationModule.Verlet(ball.cPos, ball.lPos, ball.cV, Gravity, timeInc);
 	ballValues << "Verlet pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 	CheckEdgeBoundaries(ball);
 }
@@ -275,7 +267,7 @@ void initPhysics(double rad, double speed, double angle)
 	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
 	verletBall.set(rad, ipos, iv, 2, 0, 200, 0);
 	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
-	//realBall.set(rad, ipos, iv, 2, 128, 128, 128);
+	realBall.set(rad, ipos, iv, 2, 128, 128, 128);
 
 	//set prev position for verlet
 	// be careful to use exactly correct formula to compute prev position
