@@ -42,8 +42,8 @@ double iSpeed = 15.0;  // initial ball speed
 double radius = 0.5;
 int circleSections = 10;
 
-const int winWidth = 800;
-const int winHeight = 600;
+const int winWidth = 1200;
+const int winHeight = 900;
 float ratio = (float)winHeight / (float)winWidth;
 float WorldWidth = 70.0; // 50 meter wide
 float WorldHeight = WorldWidth * ratio; // 
@@ -230,7 +230,15 @@ void updateVerletPhysics(Circle3D &ball, double timeInc, int i)
 {
 	// More exact formula for variable time step is the following:
 	//  x_2 = x_1 + (x_1 - x_0)(dt_1/dt_0) + accel * dt_1 * dt_1
-	integrationModule.Verlet(ball.cPos, ball.lPos, ball.iV, Gravity, timeInc);
+	if (i <= 0)
+	{
+		verletBall.lPos = verletBall.iPos;
+		updateEulerEPhysics(verletBall, timeInc);
+	}
+	else
+	{
+		integrationModule.Verlet(ball.cPos, ball.lPos, Gravity, timeInc);
+	}
 	ballValues << "Verlet pos: " << ball.cPos.x << ", " << ball.cPos.y << "\n";
 	CheckEdgeBoundaries(ball);
 }
@@ -263,8 +271,8 @@ void initPhysics(double rad, double speed, double angle)
 	double vy = speed * sin(angle);
 	Vector3d<float> ipos(rad, rad, 0);
 	Vector3d<float> iv(vx, vy, 0);
-	eulerEBall.set(rad, ipos, iv, 2, 230, 0, 0);
-	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
+//	eulerEBall.set(rad, ipos, iv, 2, 230, 0, 0);
+//	eulerSEBall.set(rad, ipos, iv, 2, 128, 128, 0);
 	verletBall.set(rad, ipos, iv, 2, 0, 200, 0);
 	RK4Ball.set(rad, ipos, iv, 2, 0, 0, 200);
 	realBall.set(rad, ipos, iv, 2, 128, 128, 128);
@@ -319,10 +327,10 @@ int Game(void)
 		{
 			/////////// update physics /////////////////
 		//	updatePrecisePhysics(realBall, actualTimeInc);
-			updateEulerEPhysics(eulerEBall, actualTimeInc);
+		//	updateEulerEPhysics(eulerEBall, actualTimeInc);
 		//	updateEulerSEPhysics(eulerSEBall, actualTimeInc);
-			updateVerletPhysics(verletBall, actualTimeInc, i);
-		//	updateRK4Physics(RK4Ball, actualTimeInc);
+		//	updateVerletPhysics(verletBall, actualTimeInc, i);
+			updateRK4Physics(RK4Ball, actualTimeInc);
 			/////////////////////////////////////////
 		}
 		//	UpdatePhysics(actualTimeInc);
