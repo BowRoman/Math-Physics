@@ -63,7 +63,23 @@ struct BallS
 		return (ball.x-x)*(ball.x-x) + (ball.y-y)*(ball.y-y);
 	}
 };
+
+struct Box
+{
+	double x, y, vx, vy;
+	double height, width;
+	unsigned char colorx, colory, colorz;
+	void set(double xs, double ys, double v, double u, double h, double w)
+	{
+		x = xs; y = ys; vx = v; vy = u; height = h; width = w;
+	}
+	double speedSq() { return vx*vx + vy*vy; }
+	double distSquare(Box &box) {
+		return (box.x - x)*(box.x - x) + (box.y - y)*(box.y - y);
+	}
+};
 BallS *sBalls = NULL;
+Box *sBoxes = NULL;
 
 bool **collisionFlags = NULL;
 
@@ -117,7 +133,6 @@ void DrawSolidCircle(double cx, double cy, int i)
 	glVertex2d(sBalls[i].radius + cx, cy);
 	glEnd(); 
 }
-//////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 int Menu(void)
@@ -182,11 +197,23 @@ int Menu(void)
 		glClearColor(0.0,0.0,0.0,0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		char sSpeed[128];
-		sprintf(sSpeed, "Average ball speed is %f m/s. Use Up/Down keys to change it!\n", iSpeed);
+		sprintf(sSpeed, "Average object speed is %f m/s. Use Up/Down keys to change it!\n", iSpeed);
 		char sBallCnt[128];
-		sprintf(sBallCnt, "Ball count is %d. Use PageUp/PageDown keys to change it!\n", BallCount);
+		sprintf(sBallCnt, "Object count is %d. Use PageUp/PageDown keys to change it!\n", BallCount);
 		char sRadius[128];
-		sprintf(sRadius, "ball-ball restitution factor is %f. Use Left/Right keys to change it by 0.1!\n", restitution);
+		sprintf(sRadius, "Object-object restitution factor is %f. Use Left/Right keys to change it by 0.1!\n", restitution);
+
+		char sCollision[128];
+		char* mode = "collision";
+		switch (eMode)
+		{
+		case Mode::collision: mode = "collision";
+			break;
+		case Mode::resolution: mode = "resolution";
+			break;
+		default: break;
+		}
+		sprintf(sCollision, "Current collision mode is %s. Use C/R keys to change it!\n", mode);
 
 		glColor3ub(255,255,255);
 
@@ -196,6 +223,8 @@ int Menu(void)
 		glCallLists(strlen(sRadius),GL_UNSIGNED_BYTE,sRadius);
 		glRasterPos2i(32,96);
 		glCallLists(strlen(sBallCnt),GL_UNSIGNED_BYTE,sBallCnt);
+		glRasterPos2i(32, 128);
+		glCallLists(strlen(sCollision), GL_UNSIGNED_BYTE, sCollision);
 
 		const char *msg1="G.....Start Game\n";
 		const char *msg2="ESC...Exit";
@@ -232,6 +261,44 @@ bool ballsCollide(int i, int j)
 			return true;
 
 	return false;
+}
+//////////////////////////////////////////////////////////////
+void Resolve(double cx, double cy, int i)
+{
+	for(int j = 0; j < BallCount; ++j)
+	{
+		if(collisionFlags[i][j])
+		{
+			BallS *ball = &sBalls[i];
+			float combinedRad = ball->radius + sBalls[j].radius;
+			float dist = sqrt((float)ball->distSquare(sBalls[j]));
+
+			// separate the objects
+			if(dist < combinedRad)
+			{
+				// minimum distance each object needs to be moved
+				float separation = (combinedRad - dist) / 2;
+				if (dist == 0.f)
+				{
+					dist = 0.01f;
+				}
+
+				float unitVecX = (ball->x - sBalls[j].x) / dist;
+				float unitVecY = (ball->y - sBalls[j].y) / dist;
+
+				ball->x += unitVecX * separation;
+				ball->y += unitVecY * separation;
+
+				sBalls[j].x -= unitVecX * separation;
+				sBalls[j].y -= unitVecY * separation;
+			}
+			// repel them
+
+			ball->vx *= -1;
+			ball->vy *= -1;
+			collisionFlags[i][j] = false;
+		}
+	}
 }
 
 void checkCollisions()
@@ -302,10 +369,19 @@ void renderScene()
 	////// render balls ///////////////////
 	for (int j = 0; j < BallCount; j++)
 	{
-		if (!ballCollides(j))
+		if (eMode == Mode::collision)
+		{
+			if (!ballCollides(j))
+				DrawSolidCircle(sBalls[j].x, sBalls[j].y, j);
+			else
+				DrawCircle(sBalls[j].x, sBalls[j].y, j);
+		}
+		else if (eMode == Mode::resolution)
+		{
+			if (ballCollides(j))
+				Resolve(sBalls[j].x, sBalls[j].y, j);
 			DrawSolidCircle(sBalls[j].x, sBalls[j].y, j);
-		else
-			DrawCircle(sBalls[j].x, sBalls[j].y, j);
+		}
 	}
 	////  swap //////////
 	FsSwapBuffers();
