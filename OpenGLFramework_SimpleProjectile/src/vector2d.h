@@ -25,7 +25,9 @@ public:
 	have operations performed on the relative (x, y) values*/
 	Vector2d& operator+=(const Vector2d& v) { x += v.x; y += v.y; return *this; }
 	Vector2d& operator-=(const Vector2d& v) { x -= v.x; y -= v.y; return *this; }
+	Vector2d& operator-=(T t)				{ x -= t;	y -= t;   return *this; }
 	Vector2d& operator*=(const Vector2d& v) { x *= v.x; y *= v.y; return *this; }
+	Vector2d& operator*=(T t)				{ x *= t;	y *= t;   return *this; }
 	Vector2d& operator/=(const Vector2d& v) { x /= v.x; y /= v.y; return *this; }
 
 	//Check if the Vectors have the same values (uses pairwise comparison of 
@@ -53,7 +55,6 @@ public:
 	//Returns the length of the vector from the origin.
 	double Length() const { return sqrt(x*x + y*y); }
 	double LengthSq()const { return x*x + y*y; }
-
 };
 
 template<class T> Vector2d<T> operator*(const T& s, const Vector2d<T>& v) { return Vector2d<T>(v) *= s; }
@@ -102,3 +103,10 @@ Vector2d<T> GetIntersect(const Vector2d<T>&aa, const Vector2d<T>& ab, const Vect
 }
 
 #endif
+
+// Returns the reflected vector along a given normal
+template<typename T>
+Vector2d<T> Reflect(const Vector2d<T>& vector, const Vector2d<T>& normal)
+{
+	return vector - (2 * DotProduct(vector, normal) * normal);
+}

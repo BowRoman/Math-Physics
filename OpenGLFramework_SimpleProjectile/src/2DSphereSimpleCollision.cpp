@@ -19,6 +19,7 @@
 #include "fssimplewindow.h"
 #include "wcode/fswin32keymap.h"
 #include "bitmapfont\ysglfontdata.h"
+#include "vector2d.h"
 
 typedef enum
 {
@@ -53,7 +54,7 @@ Mode eMode = Mode::collision;
 
 struct BallS
 {
-	double x,y, vx, vy;
+	double x, y, vx, vy;
 	double radius;
 	unsigned char colorx,colory, colorz;
 	void set(double xs, double ys, double v, double u, double rad)
@@ -134,6 +135,30 @@ void DrawSolidCircle(double cx, double cy, int i)
 	glEnd(); 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//void DrawBox(double cx, double cy, int i)
+//{
+//	double theta = 2. * PI / double(num_segments);
+//	double c = cos(theta);//precalculate the sine and cosine
+//	double s = sin(theta);
+//
+//	double x = sBoxes[i].radius;
+//	double y = 0.;
+//	double t = x;
+//
+//	glColor3ub(sBoxes[i].colorx, sBoxes[i].colory, sBoxes[i].colorz);
+//	glBegin();
+//	for (int i = 0; i < num_segments; i++)
+//	{
+//		glVertex2d(x + cx, y + cy);
+//		//apply the rotation matrix
+//		t = x;
+//		x = c * x - s * y;
+//		y = s * t + c * y;
+//	}
+//	glEnd();
+//}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 int Menu(void)
 {
@@ -196,12 +221,26 @@ int Menu(void)
 
 		glClearColor(0.0,0.0,0.0,0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
+		char sObject[128];
+		char* objectChoice = "SPHERE";
+		switch (eObjType)
+		{
+		case ObjectType::sphere: objectChoice = "SPHERE";
+			break;
+		case ObjectType::OBB: objectChoice = "OBB";
+			break;
+		case ObjectType::AABB: objectChoice = "AABB";
+			break;
+		default: break;
+		}
+		sprintf(sObject, "Current object type is %s. Use S/A/O keys to change it!\n", objectChoice);
+
 		char sSpeed[128];
-		sprintf(sSpeed, "Average object speed is %f m/s. Use Up/Down keys to change it!\n", iSpeed);
+		sprintf(sSpeed, "Average %s speed is %f m/s. Use Up/Down keys to change it!\n", objectChoice, iSpeed);
 		char sBallCnt[128];
-		sprintf(sBallCnt, "Object count is %d. Use PageUp/PageDown keys to change it!\n", BallCount);
+		sprintf(sBallCnt, "%s count is %d. Use PageUp/PageDown keys to change it!\n", objectChoice, BallCount);
 		char sRadius[128];
-		sprintf(sRadius, "Object-object restitution factor is %f. Use Left/Right keys to change it by 0.1!\n", restitution);
+		sprintf(sRadius, "%s-%s restitution factor is %f. Use Left/Right keys to change it by 0.1!\n", objectChoice, objectChoice, restitution);
 
 		char sCollision[128];
 		char* mode = "collision";
@@ -217,20 +256,22 @@ int Menu(void)
 
 		glColor3ub(255,255,255);
 
-		glRasterPos2i(32,32);
+		glRasterPos2i(32, 32);
+		glCallLists(strlen(sObject), GL_UNSIGNED_BYTE, sObject);
+		glRasterPos2i(32, 64);
 		glCallLists(strlen(sSpeed),GL_UNSIGNED_BYTE,sSpeed);
-		glRasterPos2i(32,64);
+		glRasterPos2i(32, 96);
 		glCallLists(strlen(sRadius),GL_UNSIGNED_BYTE,sRadius);
-		glRasterPos2i(32,96);
-		glCallLists(strlen(sBallCnt),GL_UNSIGNED_BYTE,sBallCnt);
 		glRasterPos2i(32, 128);
+		glCallLists(strlen(sBallCnt),GL_UNSIGNED_BYTE,sBallCnt);
+		glRasterPos2i(32, 160);
 		glCallLists(strlen(sCollision), GL_UNSIGNED_BYTE, sCollision);
 
 		const char *msg1="G.....Start Game\n";
 		const char *msg2="ESC...Exit";
-		glRasterPos2i(32,160);
+		glRasterPos2i(32,224);
 		glCallLists(strlen(msg1),GL_UNSIGNED_BYTE,msg1);
-		glRasterPos2i(32,192);
+		glRasterPos2i(32,256);
 		glCallLists(strlen(msg2),GL_UNSIGNED_BYTE,msg2);
 
 		FsSwapBuffers();
@@ -294,8 +335,14 @@ void Resolve(double cx, double cy, int i)
 			}
 			// repel them
 
-			ball->vx *= -1;
-			ball->vy *= -1;
+			Vector2d<double> colliderVelNormal(sBalls[j].vx, sBalls[j].vy);
+			colliderVelNormal = Normal(Perpendicular(colliderVelNormal));
+
+			Vector2d<double> ballVel(ball->vx, ball->vy);
+			ballVel = Reflect(ballVel, colliderVelNormal);
+
+			ball->vx = ballVel.x;
+			ball->vy = ballVel.y;
 			collisionFlags[i][j] = false;
 		}
 	}
@@ -360,7 +407,13 @@ void updatePhysics(double timeInc, int width, int height)
 
 
 	////// here you do collision resolution. /////////////
-
+	for (int j = 0; j < BallCount; j++)
+	{
+		if (ballCollides(j))
+		{
+			Resolve(sBalls[j].x, sBalls[j].y, j);
+		}
+	}
 }
 
 //////////////////////////////////////////////////////
@@ -378,8 +431,6 @@ void renderScene()
 		}
 		else if (eMode == Mode::resolution)
 		{
-			if (ballCollides(j))
-				Resolve(sBalls[j].x, sBalls[j].y, j);
 			DrawSolidCircle(sBalls[j].x, sBalls[j].y, j);
 		}
 	}
