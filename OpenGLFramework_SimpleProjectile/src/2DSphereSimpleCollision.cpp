@@ -135,29 +135,39 @@ void DrawSolidCircle(double cx, double cy, int i)
 	glEnd(); 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+void DrawBox(double cx, double cy, int i)
+{
+	double x = sBoxes[i].width/2;
+	double y = sBoxes[i].height/2;
+
+	glColor3ub(sBalls[i].colorx, sBalls[i].colory, sBalls[i].colorz);
+	glBegin(GL_LINES);
+	
+	glVertex2d(cx + x, cy + y);
+	glVertex2d(cx + x, cy - y);
+	glVertex2d(cx - x, cy - y);
+	glVertex2d(cx - x, cy + y);
+	glVertex2d(cx + x, cy + y);
+
+	glEnd();
+}
 ////////////////////////////////////////////////////////////////////////////////////////
-//void DrawBox(double cx, double cy, int i)
-//{
-//	double theta = 2. * PI / double(num_segments);
-//	double c = cos(theta);//precalculate the sine and cosine
-//	double s = sin(theta);
-//
-//	double x = sBoxes[i].radius;
-//	double y = 0.;
-//	double t = x;
-//
-//	glColor3ub(sBoxes[i].colorx, sBoxes[i].colory, sBoxes[i].colorz);
-//	glBegin();
-//	for (int i = 0; i < num_segments; i++)
-//	{
-//		glVertex2d(x + cx, y + cy);
-//		//apply the rotation matrix
-//		t = x;
-//		x = c * x - s * y;
-//		y = s * t + c * y;
-//	}
-//	glEnd();
-//}
+void DrawSolidBox(double cx, double cy, int i)
+{
+	double x = sBoxes[i].width / 2;
+	double y = sBoxes[i].height / 2;
+
+	glColor3ub(sBalls[i].colorx, sBalls[i].colory, sBalls[i].colorz);
+	glBegin(GL_TRIANGLES);
+
+	glVertex2d(cx + x, cy + y);
+	glVertex2d(cx + x, cy - y);
+	glVertex2d(cx - x, cy - y);
+	glVertex2d(cx - x, cy + y);
+
+	glEnd();
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 int Menu(void)
@@ -422,17 +432,56 @@ void renderScene()
 	////// render balls ///////////////////
 	for (int j = 0; j < BallCount; j++)
 	{
-		if (eMode == Mode::collision)
+		switch (eObjType)
 		{
-			if (!ballCollides(j))
+		case ObjectType::AABB:
+		{
+			if (eMode == Mode::collision)
+			{
+				if (!ballCollides(j))
+					DrawSolidBox(sBoxes[j].x, sBoxes[j].y, j);
+				else
+					DrawBox(sBoxes[j].x, sBoxes[j].y, j);
+			}
+			else if (eMode == Mode::resolution)
+			{
+				DrawSolidBox(sBoxes[j].x, sBoxes[j].y, j);
+			}
+		}
+			break;
+		case ObjectType::OBB:
+		{
+			if (eMode == Mode::collision)
+			{
+				if (!ballCollides(j))
+					DrawSolidBox(sBoxes[j].x, sBoxes[j].y, j);
+				else
+					DrawBox(sBoxes[j].x, sBoxes[j].y, j);
+			}
+			else if (eMode == Mode::resolution)
+			{
+				DrawSolidBox(sBoxes[j].x, sBoxes[j].y, j);
+			}
+		}
+			break;
+		case ObjectType::sphere:
+		default:
+		{
+			if (eMode == Mode::collision)
+			{
+				if (!ballCollides(j))
+					DrawSolidCircle(sBalls[j].x, sBalls[j].y, j);
+				else
+					DrawCircle(sBalls[j].x, sBalls[j].y, j);
+			}
+			else if (eMode == Mode::resolution)
+			{
 				DrawSolidCircle(sBalls[j].x, sBalls[j].y, j);
-			else
-				DrawCircle(sBalls[j].x, sBalls[j].y, j);
+			}
 		}
-		else if (eMode == Mode::resolution)
-		{
-			DrawSolidCircle(sBalls[j].x, sBalls[j].y, j);
+		break;
 		}
+
 	}
 	////  swap //////////
 	FsSwapBuffers();
@@ -456,17 +505,35 @@ int Game(void)
 	srand(time(NULL)); /* seed random number generator */
 	int xdist = width/3;
 	int ydist = height/3;
-	for(int i=0; i<BallCount; i++)
+	if (eObjType == ObjectType::sphere)
 	{
-		double rad = radius * (1. + double(rand()%BallCount)/double(BallCount));
-		ballX = width/2 + (i-BallCount/2) * rand()% xdist;
-		ballY = height/2 + (i-BallCount/2) *rand()% ydist;
-		double angle = double(rand() % 360)/180. * PI;
-		double speed = iSpeed *(1. + double(rand()%BallCount)/double(BallCount));
-		ballVx = speed * cos(angle);
-		ballVy = speed * sin(angle);
-		sBalls[i].set(ballX, ballY, ballVx, ballVy, rad);
-		sBalls[i].colorx=rand()%250; sBalls[i].colory=rand()%250; sBalls[i].colorz=rand()%250;
+		for (int i = 0; i < BallCount; i++)
+		{
+			double rad = radius * (1. + double(rand() % BallCount) / double(BallCount));
+			ballX = width / 2 + (i - BallCount / 2) * rand() % xdist;
+			ballY = height / 2 + (i - BallCount / 2) *rand() % ydist;
+			double angle = double(rand() % 360) / 180. * PI;
+			double speed = iSpeed *(1. + double(rand() % BallCount) / double(BallCount));
+			ballVx = speed * cos(angle);
+			ballVy = speed * sin(angle);
+			sBalls[i].set(ballX, ballY, ballVx, ballVy, rad);
+			sBalls[i].colorx = rand() % 250; sBalls[i].colory = rand() % 250; sBalls[i].colorz = rand() % 250;
+		}
+	}
+	else
+	{
+		for (int i = 0; i<BallCount; i++)
+		{
+			double rad = radius * (1. + double(rand() % BallCount) / double(BallCount));
+			ballX = width / 2 + (i - BallCount / 2) * rand() % xdist;
+			ballY = height / 2 + (i - BallCount / 2) *rand() % ydist;
+			double angle = double(rand() % 360) / 180. * PI;
+			double speed = iSpeed *(1. + double(rand() % BallCount) / double(BallCount));
+			ballVx = speed * cos(angle);
+			ballVy = speed * sin(angle);
+			sBoxes[i].set(ballX, ballY, ballVx, ballVy, rad, rad);
+			sBoxes[i].colorx = rand() % 250; sBoxes[i].colory = rand() % 250; sBoxes[i].colorz = rand() % 250;
+		}
 	}
 	
 	glViewport(0,0,width,height);
